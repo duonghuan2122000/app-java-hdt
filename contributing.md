@@ -1,8 +1,11 @@
 **Hướng dẫn contribute cho ứng dụng.**
-## Cài đặt
 
-    git clone https://github.com/duonghuan2122000/app-java-hdt.git
+## Cài đặt
+Đầu tiên fork repository về github của bản thân và lấy url của repo đó
+
+    git clone url-git-repo
     cd app-java-hdt
+url-git-repo là url của repo cần contribute sau khi fork về tài khoản github của bản thân.
 ## Tạo branch
 
     git branch ten-branch
