@@ -15,12 +15,12 @@ import javax.swing.JOptionPane;
  *
  * @author Jocelyn
  */
-public class DangNhapView extends javax.swing.JFrame {
+public class LoginView extends javax.swing.JFrame {
 
     /**
      * Creates new form LoginView
      */
-    public DangNhapView() {
+    public LoginView() {
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -155,13 +155,14 @@ public class DangNhapView extends javax.swing.JFrame {
         try {
             login = Services.checkLogin(userName, password);
             if (!login) {
-            JOptionPane.showMessageDialog(this.Login, "UserName or Password is wrong! \n Please enter again.");
+                JOptionPane.showMessageDialog(this.Login, "UserName or Password is wrong! \n Please enter again.");
             } else {
-            new MenuView(userName).setVisible(true);
-            this.dispose();
+//            new MenuView(userName).setVisible(true);
+                new HomeView().setVisible(true);
+                this.dispose();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DangNhapView.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoginView.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }//GEN-LAST:event_LoginActionPerformed
@@ -183,21 +184,23 @@ public class DangNhapView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DangNhapView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DangNhapView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DangNhapView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DangNhapView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LoginView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new DangNhapView().setVisible(true);
+                new LoginView().setVisible(true);
             }
         });
     }

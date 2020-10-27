@@ -6,14 +6,11 @@
 package Services;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import model.User;
-import utils.Const;
+import utils.Database;
 
 /**
  *
@@ -21,15 +18,17 @@ import utils.Const;
  */
 public class Services {
     public static Connection getConnection() {
-        Connection conn = null;
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection(Const.DB_URL, Const.USER_NAME, Const.PASSWORD);
-            System.out.println("connect successfully!");
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("connect failure!");
-        }
-        return conn;
+//        Connection conn = null;
+//        try {
+//            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//            conn = DriverManager.getConnection(Const.DB_URL, Const.USER_NAME, Const.PASSWORD);
+//            System.out.println("connect successfully!");
+//        } catch (ClassNotFoundException | SQLException ex) {
+//            ex.printStackTrace();
+//            System.out.println("connect failure!");
+//        }
+//        return conn;
+        return Database.getInstance().getConnection();
     }
     public static User getUserbyName(String name) throws SQLException{
         User userlogin = new User();
