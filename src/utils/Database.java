@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * @author Jocelyn
  */
 public class Database {
-
+    private static final Database INSTANCE = new Database();
     private Connection conn;
 
     private Database() {
@@ -31,7 +31,7 @@ public class Database {
     }
     
     public static Database getInstance(){
-        return new Database();
+        return INSTANCE;
     } 
     
     public Connection getConnection(){
