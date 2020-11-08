@@ -16,9 +16,22 @@ import models.Product;
  * @author Jocelyn
  */
 public class ProductService {
+
     private static ProductDao productDao = new ProductDaoImpl();
     
-    public static List<Product> getAllProducts() throws SQLException{
+    public static List<Product> getAllProducts() throws SQLException {
         return productDao.getAllProducts();
+    }
+    
+    public static void createProduct(Product product) throws SQLException {
+        productDao.createProduct(product);
+    }
+    
+    public static void updateProduct(Product product) throws SQLException {
+        productDao.updateProduct(product);
+    }
+    
+    public static void delProduct(Product product) throws SQLException {
+        productDao.delProduct(product);
     }
 }

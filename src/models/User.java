@@ -24,6 +24,13 @@ public class User {
         this.isAdmin = isAdmin;
     }
 
+    public User(int id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+    
+    
+
     public User() {
         this(0, "", "", 0);
     }
@@ -54,6 +61,10 @@ public class User {
 
     public void setIsAdmin(int isAdmin) {
         this.isAdmin = isAdmin;
+    }
+    
+    public String getUsername(){
+        return username;
     }
 
     

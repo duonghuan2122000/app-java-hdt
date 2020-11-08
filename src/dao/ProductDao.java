@@ -22,17 +22,24 @@ public interface ProductDao {
      */
     List<Product> getAllProducts() throws SQLException;
 
-//    /**
-//     * tao mot san pham moi
-//     * @param product
-//     * @throws SQLException 
-//     */
-//    void createProduct(Product product) throws SQLException;
-//
-//    /**
-//     * chinh sua mot san pham
-//     * @param product
-//     * @throws SQLException 
-//     */
-//    void updateProduct(Product product) throws SQLException;
+    /**
+     * tao mot san pham moi
+     * @param product
+     * @throws SQLException 
+     */
+    void createProduct(Product product) throws SQLException;
+
+    /**
+     * chinh sua mot san pham
+     * @param product
+     * @throws SQLException 
+     */
+    void updateProduct(Product product) throws SQLException;
+    
+    /**
+     * xoa mot san pham
+     * @param product
+     * @throws SQLException 
+     */
+    void delProduct(Product product) throws SQLException;
 }
