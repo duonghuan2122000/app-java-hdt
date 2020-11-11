@@ -31,4 +31,11 @@ public interface ReceiptDao {
      * @throws SQLException
      */
     Receipt getReceipt(int id) throws SQLException;
+    
+    /**
+     * them mot hoa don moi
+     * @param receipt
+     * @throws SQLException 
+     */
+    void createReceipt(Receipt receipt) throws SQLException;
 }

@@ -5,23 +5,32 @@
  */
 package views;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Product;
+import models.Receipt;
 import services.ProductService;
+import services.ReceiptService;
+import services.Storage;
 
 /**
  *
  * @author Jocelyn
  */
 public class ReceiptCreation extends javax.swing.JFrame {
-    private List<Product> products, filterProducts;
-    private DefaultTableModel defaultTableModelProduct;
 
+    private List<Product> products, filterProducts;
+    private List<Pair<Integer, Product>> productDeals;
+    private DefaultTableModel defaultTableModelProduct, defaultTableModelReceipt;
     /**
      * Creates new form HoaDonView
      */
@@ -29,6 +38,8 @@ public class ReceiptCreation extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         defaultTableModelProduct = (DefaultTableModel) tblProduct.getModel();
+        defaultTableModelReceipt = (DefaultTableModel) tblReceipt.getModel();
+        productDeals = new ArrayList<>();
         try {
             products = ProductService.getAllProducts();
             filterProducts = products;
@@ -53,16 +64,18 @@ public class ReceiptCreation extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblReceipt = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProduct = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jTxtProductIdOrName = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
+        jTxtProductQuantity = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jTxtTotalPrice = new javax.swing.JLabel();
 
         jButton2.setText("jButton2");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -108,16 +121,26 @@ public class ReceiptCreation extends javax.swing.JFrame {
                 .addContainerGap(21, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblReceipt.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        tblReceipt.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Sản phẩm", "Số lượng ", "Giá"
+                "Sản phẩm", "Số lượng ", "Giá bán", "Tổng giá"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
 
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblReceipt);
+
+        tblProduct.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         tblProduct.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -125,7 +148,15 @@ public class ReceiptCreation extends javax.swing.JFrame {
             new String [] {
                 "Mã sản phẩm", "Tên sản phẩm"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(tblProduct);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
@@ -142,16 +173,32 @@ public class ReceiptCreation extends javax.swing.JFrame {
             }
         });
 
-        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jTxtProductQuantity.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jLabel2.setText("Nhập số lượng");
 
         jButton4.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jButton4.setText("Thêm");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         jButton5.setText("Tạo hóa đơn");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jLabel3.setText("Tổng tiền: ");
+
+        jTxtTotalPrice.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
+        jTxtTotalPrice.setText("0");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -171,12 +218,16 @@ public class ReceiptCreation extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButton4)
-                                    .addComponent(jTextField2)))
+                                    .addComponent(jTxtProductQuantity)))
                             .addComponent(jLabel1))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton5)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 462, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTxtTotalPrice)))))
                 .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -191,17 +242,25 @@ public class ReceiptCreation extends javax.swing.JFrame {
                     .addComponent(jButton5))
                 .addGap(29, 29, 29)
                 .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton4)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(jTxtProductQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton4)))
+                        .addContainerGap(26, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jTxtTotalPrice))
+                        .addGap(27, 27, 27))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -231,16 +290,46 @@ public class ReceiptCreation extends javax.swing.JFrame {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
         String idOrName = jTxtProductIdOrName.getText();
-        if(idOrName.matches("^([0-9])+$")){
+        if (idOrName.matches("^([0-9])+$")) {
             int id = Integer.parseInt(idOrName);
             filterProductsById(id);
         } else {
             filterProductsByName(idOrName);
         }
-        
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        Product product = filterProducts.get(tblProduct.getSelectedRow());
+        int p_quantity = Integer.parseInt(jTxtProductQuantity.getText());
+        if (p_quantity > product.getQuantity()) {
+            JOptionPane.showMessageDialog(rootPane, "Khong co du so luong san pham");
+            return;
+        }
+        if (p_quantity <= 0) {
+            JOptionPane.showMessageDialog(rootPane, "So luong san pham phai lon hon 0");
+            return;
+        }
+
+        productDeals.add(new Pair(p_quantity, product));
+        bindDataToTblReceipt();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        Receipt receipt = new Receipt(Storage.getInstance().getUser(), Date.valueOf(LocalDate.now()), productDeals);
+        try {
+            ReceiptService.createReceipt(receipt);
+            JOptionPane.showMessageDialog(rootPane, "Them hoa don thanh cong");
+        } catch (SQLException ex) {
+//            Logger.getLogger(ReceiptCreation.class.getName()).log(Level.SEVERE, null, ex);
+ex.printStackTrace();
+            JOptionPane.showMessageDialog(rootPane, "Them hoa don that bai");
+        }
+        
+    }//GEN-LAST:event_jButton5ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -250,20 +339,22 @@ public class ReceiptCreation extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTxtProductIdOrName;
+    private javax.swing.JTextField jTxtProductQuantity;
+    private javax.swing.JLabel jTxtTotalPrice;
     private javax.swing.JTable tblProduct;
+    private javax.swing.JTable tblReceipt;
     // End of variables declaration//GEN-END:variables
 
     private void bindDataToTblProduct() {
         defaultTableModelProduct.setRowCount(0);
-        for(Product p: filterProducts){
+        for (Product p : filterProducts) {
             defaultTableModelProduct.addRow(new Object[]{
                 p.getId(),
                 p.getName()
@@ -279,5 +370,22 @@ public class ReceiptCreation extends javax.swing.JFrame {
     private void filterProductsByName(String name) {
         filterProducts = products.stream().filter(product -> product.getName().contains(name)).collect(Collectors.toList());
         bindDataToTblProduct();
+    }
+
+    private void bindDataToTblReceipt() {
+        defaultTableModelReceipt.setRowCount(0);
+        double totalPrice = 0;
+        for (Pair<Integer, Product> pair : productDeals) {
+            Product product = pair.getValue();
+            double totalPriceP = pair.getKey() * product.getPriceSale();
+            totalPrice += totalPriceP;
+            defaultTableModelReceipt.addRow(new Object[]{
+                product.getName(),
+                pair.getKey(),
+                product.getPriceSale(),
+                totalPriceP
+            });
+        }
+        jTxtTotalPrice.setText(String.valueOf(totalPrice));
     }
 }

@@ -99,6 +99,7 @@ public class ReceiptView extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        tblReceipt.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         tblReceipt.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -122,6 +123,7 @@ public class ReceiptView extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblReceipt);
 
+        tblDetailReceipt.setFont(new java.awt.Font("Tahoma", 0, 16)); // NOI18N
         tblDetailReceipt.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -244,6 +246,7 @@ public class ReceiptView extends javax.swing.JFrame {
     private void bindDataToTblReceipt() {
         try {
             receipts = ReceiptService.getAllReceipts();
+            defaultTableModelReceipt.setRowCount(0);
             for(Receipt r: receipts){
                 defaultTableModelReceipt.addRow(new Object[]{
                     r.getId(),
@@ -260,13 +263,14 @@ public class ReceiptView extends javax.swing.JFrame {
         try {
             Receipt receipt = ReceiptService.getReceipt(id);
             double totalPrice = 0;
+            defaultTableModelDetailReceipt.setRowCount(0);
             for(Pair<Integer, Product> pair: receipt.getProducts()){
                 Product product = pair.getValue();
                 double totalPriceP = pair.getKey() * product.getPriceSale();
                 totalPrice += totalPriceP;
                 defaultTableModelDetailReceipt.addRow(new Object[]{
                     product.getName(),
-                    product.getQuantity(),
+                    pair.getKey(),
                     product.getPriceSale(),
                     totalPriceP
                 });

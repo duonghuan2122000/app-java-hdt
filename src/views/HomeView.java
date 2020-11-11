@@ -22,12 +22,12 @@ public class HomeView extends javax.swing.JFrame {
     public HomeView() {
         initComponents();
         setLocationRelativeTo(null);
-//        user = Storage.getInstance().getUser();
-//        if (Storage.getInstance().getUser().isEmpty()) {
-//            new LoginView().setVisible(true);
-//            this.dispose();
-//        }
-//        jLabel1.setText(user.getUsername());
+        user = Storage.getInstance().getUser();
+        if (Storage.getInstance().getUser().isEmpty()) {
+            new LoginView().setVisible(true);
+            this.dispose();
+        }
+        jLabel1.setText(user.getUsername());
     }
 
     /**

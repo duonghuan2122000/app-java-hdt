@@ -32,6 +32,14 @@ public class Receipt {
         this.products = products;
     }
 
+    public Receipt(User user, Date createdAt, List<Pair<Integer, Product>> products) {
+        this.user = user;
+        this.createdAt = createdAt;
+        this.products = products;
+    }
+    
+    
+
     public List<Pair<Integer, Product>> getProducts() {
         return products;
     }

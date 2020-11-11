@@ -25,4 +25,8 @@ public class ReceiptService {
     public static Receipt getReceipt(int id) throws SQLException {
         return receiptDao.getReceipt(id);
     }
+    
+    public static void createReceipt(Receipt receipt) throws SQLException {
+        receiptDao.createReceipt(receipt);
+    }
 }
